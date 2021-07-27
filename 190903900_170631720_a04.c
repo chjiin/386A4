@@ -27,7 +27,13 @@ int RQ( avail, max, allo, need, line) { //execute request algorithm and safety a
 	return 0;
 }
 
-int main() {
+int main( int argc, char **argv ) {
+	if (argc < 4) {
+		printf("Missing command line arguments, exiting with error code -1\n");
+		return -1;
+	}
+
+	argv++;
 	setbuf(stdout, NULL);
 	printf("test\n");
 	//first initialize all variables. right now some are hard coded, until file input and argument input is coded
@@ -45,14 +51,20 @@ int main() {
 	//initialize the 4 main arrays
 
 	int avail[n]; //this is set to be equal to the arguments
-	for (i = 0; i < n; i++) {
-		avail[i] = 6;
+	for (i = 0; i <=n; i++) {
+		avail[i] = atoi(argv[i]);
 	}
 
 	int max[n][m]; //initialized to sample_in
-	for (i = 0; i < n; i++) {
-		for (j = 0; j < m; j++) {
+	for (i = 0; i < m; i++) {
+		for (j = 0; j <= n; j++) {
 			max[i][j] = 3; //----------------temporarily hard coded during testing. fix later
+		}
+	}
+	for (i = 0; i <m; i++) {
+		printf("\n");
+		for (j = 0; j <=n; j++) {
+			printf("%d ", max[i][j]); //----------------temporarily hard coded during testing. fix later
 		}
 	}
 
