@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+int RQ( avail, max, allo, need, req, process) {
+
+	return 0;
+}
+
 int main() {
 	setbuf(stdout, NULL);
 	printf("test\n");
@@ -11,6 +16,8 @@ int main() {
 	int m = 5; //how many resource types
 	int i, j; //i loops through processes. j loops through resources
 	char line[64];
+	int process;
+	int req[m];
 
 	//initialize the 4 main arrays
 
@@ -23,6 +30,20 @@ int main() {
 	for (i = 0; i < n; i++) {
 		for (j = 0; j < m; j++) {
 			max[i][j] = 3; //----------------temporarily hard coded during testing. fix later
+		}
+	}
+
+	int allo[n][m]; //initialized to zero
+	for (i = 0; i < n; i++) {
+		for (j = 0; j < m; j++) {
+			allo[i][j] = 0;
+		}
+	}
+
+	int need[n][m]; //always equal to max - allo
+	for (i = 0; i < n; i++) {
+		for (j = 0; j < m; j++) {
+			need[i][j] = max[i][j];
 		}
 	}
 
@@ -53,8 +74,16 @@ int main() {
 			char *bit = strtok(line, " ");
 			if (strcmp(bit, "RQ") == 0) {
 				//Process Request Code-------------------------------------------
-				for (i = 0; i < n; i++) {
-					char *bit = strtok(line, " ");
+				bit = strtok(line, " ");
+				process = atoi(bit);
+				for (j = 0; j < m; j++) {
+					bit = strtok(line, " ");
+					req[j] = atoi(bit);
+				}
+				if (RQ(avail, max, allo, need, req, process) == 0) {
+					printf("State is safe, and request is satisfied");
+				} else {
+					printf("Request denied");
 				}
 
 			} else if (strcmp(bit, "RL") == 0) {
