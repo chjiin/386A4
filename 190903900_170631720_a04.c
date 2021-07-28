@@ -4,36 +4,55 @@
 #include <ctype.h>
 
 //global variables
-int n;
-int m;
+int n = 5;//processes
+int m = 4;//resources
 
-int RQ(int avail[], int max[][], int allo[][], int need[][], char line) {
+int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) {
 	//int i;
 	int j;
 	int req[m];
 	int valid;
 
-	char *bit = strtok(NULL, " ");
+	printf("line is %s\n", line);
+
+	char *bit = strtok(line, " ");
+	bit = strtok(NULL, " ");
 	int process = atoi(bit);
 
 	if (process == 0) {
 		//atoi returns 0 if invalid input, so if 0 is returned, manually check if bit == "0"
-		valid = 0;
-	}
-
-	for (j = 0; j < m; j++) {
-		bit = strtok(line, " ");
-		req[j] = atoi(bit);
-		if (process == 0 && strcmp("0", bit) == 0) {
+		int result = strcmp(bit, "0");
+		if (result != 0){
 			valid = 0;
 		}
 	}
+	printf("test2: process = %d\n", process);
+
+	for (j = 0; j < m; j++) {
+		bit = strtok(NULL, " ");
+		req[j] = atoi(bit);
+		if (req[j] == 0 && strcmp(bit, "0") == 0) {
+			valid = 0;
+		}
+	}
+	printf("test3\n");
 	if (valid == 0) {
 		printf("Invalid RQ arguments\n");
 		return -1;
 	}
 //request algorithm
-//temp measure to remove warnings
+//first we check that all requests are below the need. requiring a for loop of m items
+	valid = 1;
+	for (j = 0; j < m; j++){
+		if (req[j] > need[process][j]){
+			valid = 0;
+		}
+	}
+	if(valid == 0){
+		printf("Given request exceeds maximum needed resources\n");
+	}
+
+	
 
 	return 0;
 }
@@ -41,46 +60,62 @@ int RQ(int avail[], int max[][], int allo[][], int need[][], char line) {
 int main(int argc, char **argv) {
 	setbuf(stdout, NULL);
 	printf("test\n");
-	if (argc < 4) {
+	if (argc != 5) {
 		printf("Missing command line arguments, exiting with error code -1\n");
 		return -1;
 	}
-	//first initialize all variables. right now some are hard coded, until file input and argument input is coded
+//first initialize all variables. right now some are hard coded, until file input and argument input is coded
 
-	n = 4; //how many processes
-	m = 5; //how many resource types
 	int i, j; //i loops through processes. j loops through resources
 	char line[64];
+	char line2[64];
 	char *bit;
-	char c;
-	//int process;
-	//int req[m];
-	int flag;
-
-	//initialize the 4 main arrays
+	//line = "test";
+//initialize the 4 main arrays
 
 	int avail[n]; //this is set to be equal to the arguments
 	for (i = 0; i < n; i++) {
 		avail[i] = atoi(argv[i]);
 	}
 
-	int max[n][m]; //initialized to sample_in
-	for (i = 0; i < m; i++) {
-		for (j = 0; j < n; j++) {
-			max[i][j] = 3; //----------------temporarily hard coded during testing. fix later
+	//FILE INPUT STARTS HERE==============================================
+
+	FILE* maxin = fopen("sample4_in.txt", "r");
+	int a = 0;
+	int k = 0;
+	char filestr[64];
+	while ((a = fgetc(maxin)) != EOF){
+		if(isdigit((int)a)){
+			printf("%c\n", a);
+			filestr[k] = a;
+			k++;
 		}
 	}
 
+	fclose(maxin);
+
+	k = 0;
+	int max[n][m]; //initialized to sample_in
+	for (i = 0; i < n; i++) {
+		printf("BREAK\n");
+		for (j = 0; j < m; j++) {
+			max[i][j] = filestr[k];
+			k++;
+		}
+	}
+
+	//FILE INPUT ENDS HERE==============================================
+
 	int allo[n][m]; //initialized to zero
-	for (i = 0; i < m; i++) {
-		for (j = 0; j < n; j++) {
+	for (i = 0; i < n; i++) {
+		for (j = 0; j < m; j++) {
 			allo[i][j] = 0;
 		}
 	}
 
 	int need[n][m]; //always equal to max - allo
-	for (i = 0; i < m; i++) {
-		for (j = 0; j < n; j++) {
+	for (i = 0; i < n; i++) {
+		for (j = 0; j < m; j++) {
 			need[i][j] = max[i][j];
 		}
 	}
@@ -99,9 +134,7 @@ int main(int argc, char **argv) {
 
 		//----------parse input
 		//the input can be one word or one word followed by ints. first check one word commands, the RL & RQ
-		if (strcmp(line, "status") == 1) {
-
-		} else if (strcmp(line, "Exit") == 0) {
+		if (strcmp(line, "Exit") == 0) {
 			//Exit code----------------------------------------------------------
 			printf("Now Exiting Program\n");
 			cont = 0;
@@ -112,39 +145,18 @@ int main(int argc, char **argv) {
 			//run code-----------------------------------------------------------
 			printf("run code\n");
 		} else {//one word commands have been checked, now check if command is RL or RQ
-			bit = strtok(line, " ");
+			
+			strcpy(line2, line);
+			bit = strtok(line2, " ");
 			if (strcmp(bit, "RQ") == 0) {
 				printf("RQ recognized\n");
-				
-				//-----------------------------check if there are the right number of only integers, then call fxn
-				/*
-				i = 0;//counting number
-				j = 0;
-				flag = 1; //is the command valid
-				bit = strtok(NULL, " ");
-				while (bit != NULL && flag == 1) { //for every number
-					printf("checking bit %s\n", bit);
-					//printf( " %s\n", bit );
-					c = bit[i];
-					for (i = 0; i < strlen(bit); i++) {	//for every character
-						if (isdigit((unsigned char)c) != 1) {//if any single character is not a digit, we know the command is invalid
-							printf("detected %c\n", c);
-							flag = 0;
-						}
-						c = bit[i];
-					}
-					bit = strtok(NULL, " ");
-					j++;
-				}
-				if (flag == 1 && j == (1 + m)) {//if every input was a number and there are the correct amount of numbers, proceed with command
-					printf("valid command");
-					*/
-					 if (RQ(avail, max, allo, need, &line) == 0) {
-					 printf("RQ returned valid");
-					 } else {
-					 printf("RQ did not return valid");
-					 }
-					
+
+				//-----------------------------call RQ fxn
+
+				if (RQ(avail, max, allo, need, line) == 0) {
+					printf("RQ returned valid\n");
+				} else {
+					printf("RQ did not return valid\n");
 				}
 
 			} else if (strcmp(bit, "RL") == 0) {
@@ -153,9 +165,9 @@ int main(int argc, char **argv) {
 				printf("Invalid Input\n");
 			}
 			printf("Looping now\n");
-			//cont = 0;
+			cont = 0;
 		}
 	}
-
+	printf("Program Terminated\n");
 	return 0;
 }
