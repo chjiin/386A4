@@ -118,6 +118,7 @@ int main(int argc, char **argv) {
 		printf("Missing command line arguments, exiting with error code -1\n");
 		return -1;
 	}
+	
 //first initialize all variables. right now some are hard coded, until file input and argument input is coded
 
 	int i, j; //i loops through processes. j loops through resources
@@ -127,9 +128,14 @@ int main(int argc, char **argv) {
 	//line = "test";
 //initialize the 4 main arrays
 
-	int avail[n]; //this is set to be equal to the arguments
-	for (i = 0; i < n; i++) {
-		avail[i] = atoi(argv[i]);
+	int avail[m]; //this is set to be equal to the arguments
+	for (i = 0; i < m; i++) {
+		avail[i] = atoi(argv[i+1]);
+		printf("avail: %d\n", avail[i]);
+	}
+	printf("Currently Available resources: ");
+	for(i = 0; i < m; i++){
+		printf("%d ", avail[i]);
 	}
 
 	//FILE INPUT STARTS HERE==============================================
@@ -140,7 +146,6 @@ int main(int argc, char **argv) {
 	char filestr[64];
 	while ((a = fgetc(maxin)) != EOF){
 		if(isdigit((int)a)){
-			printf("%c\n", a);
 			filestr[k] = a;
 			k++;
 		}
@@ -151,10 +156,18 @@ int main(int argc, char **argv) {
 	k = 0;
 	int max[n][m]; //initialized to sample_in
 	for (i = 0; i < n; i++) {
-		printf("BREAK\n");
 		for (j = 0; j < m; j++) {
 			max[i][j] = filestr[k];
 			k++;
+		}
+	}
+	
+	printf("\nMaximum resources from file:");
+
+	for (i = 0; i < n; i++) {
+		printf("\n");
+		for (j = 0; j < m; j++) {
+			printf("%c ", max[i][j]);
 		}
 	}
 
