@@ -7,34 +7,35 @@
 int n;
 int m;
 
-int RQ( int avail, int max, int allo, int need, char* line);
-	bit = strtok(NULL, " ");
-	process = atoi(bit);
-	if (process == 0 && strcmp("0", bit) == 0){
-	//atoi returns 0 if invalid input, so if 0 is returned, manually check if bit == "0" 
+int RQ(int avail[], int max[][], int allo[][], int need[][], char line) {
+	//int i;
+	int j;
+	int req[m];
+	int valid;
+
+	char *bit = strtok(NULL, " ");
+	int process = atoi(bit);
+
+	if (process == 0) {
+		//atoi returns 0 if invalid input, so if 0 is returned, manually check if bit == "0"
 		valid = 0;
 	}
-	
+
 	for (j = 0; j < m; j++) {
 		bit = strtok(line, " ");
 		req[j] = atoi(bit);
-		if (process == 0 && strcmp("0", bit) == 0){
+		if (process == 0 && strcmp("0", bit) == 0) {
 			valid = 0;
 		}
 	}
-	if (valid == 0){
+	if (valid == 0) {
 		printf("Invalid RQ arguments\n");
 		return -1;
 	}
-	//request algorithm
-	
+//request algorithm
+//temp measure to remove warnings
 
-	//temp measure to remove warnings
-	
-
-	
-
-	return 0;	
+	return 0;
 }
 
 int main(int argc, char **argv) {
@@ -44,19 +45,15 @@ int main(int argc, char **argv) {
 		printf("Missing command line arguments, exiting with error code -1\n");
 		return -1;
 	}
-	//first initialize all variables. right now some are hard coded, until file input and argument input is coded
+//first initialize all variables. right now some are hard coded, until file input and argument input is coded
 
 	n = 4; //how many processes
 	m = 5; //how many resource types
 	int i, j; //i loops through processes. j loops through resources
 	char line[64];
 	char *bit;
-	//char c;
-	//int process;
-	//int req[m];
-	int flag;
 
-	//initialize the 4 main arrays
+//initialize the 4 main arrays
 
 	int avail[n]; //this is set to be equal to the arguments
 	for (i = 0; i < n; i++) {
@@ -114,36 +111,13 @@ int main(int argc, char **argv) {
 			bit = strtok(line, " ");
 			if (strcmp(bit, "RQ") == 0) {
 				printf("RQ recognized\n");
-				
-				//-----------------------------check if there are the right number of only integers, then call fxn
-				/*
-				i = 0;//counting number
-				j = 0;
-				flag = 1; //is the command valid
-				bit = strtok(NULL, " ");
-				while (bit != NULL && flag == 1) { //for every number
-					printf("checking bit %s\n", bit);
-					//printf( " %s\n", bit );
-					c = bit[i];
-					for (i = 0; i < strlen(bit); i++) {	//for every character
-						if (isdigit((unsigned char)c) != 1) {//if any single character is not a digit, we know the command is invalid
-							printf("detected %c\n", c);
-							flag = 0;
-						}
-						c = bit[i];
-					}
-					bit = strtok(NULL, " ");
-					j++;
-				}
-				if (flag == 1 && j == (1 + m)) {//if every input was a number and there are the correct amount of numbers, proceed with command
-					printf("valid command");
-					*/
-					 if (RQ(avail, max, allo, need, &line) == 0) {
-					 printf("RQ returned valid");
-					 } else {
-					 printf("RQ did not return valid");
-					 }
-					
+
+				//-----------------------------call RQ fxn
+
+				if (RQ(avail, max, allo, need, line) == 0) {
+					printf("RQ returned valid");
+				} else {
+					printf("RQ did not return valid");
 				}
 
 			} else if (strcmp(bit, "RL") == 0) {
