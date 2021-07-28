@@ -4,15 +4,16 @@
 #include <ctype.h>
 
 //global variables
-int n;//processes
-int m;//resources
+int n = 5;//5 processes
+int m = 4;//4 resources
+
 int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) {
 	//int i;
 	int j;
-	//int req[m];
+	int req[m];
 	int valid;
 
-	char *bit = strtok(NULL, " ");
+	char *bit = strtok(line, " ");
 	int process = atoi(bit);
 
 	if (process == 0) {
@@ -22,14 +23,16 @@ int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 			valid = 0;
 		}
 	}
+	printf("test2: process = %d\n", process);
 
 	for (j = 0; j < m; j++) {
-		bit = strtok(line, " ");
-		//req[j] = atoi(bit);
-		if (process == 0 && strcmp("0", bit) == 0) {
+		bit = strtok(NULL, " ");
+		req[j] = atoi(bit);
+		if (req[j] == 0 && strcmp(bit, "0") == 0) {
 			valid = 0;
 		}
 	}
+	printf("test3\n");
 	if (valid == 0) {
 		printf("Invalid RQ arguments\n");
 		return -1;
@@ -43,14 +46,12 @@ int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 int main(int argc, char **argv) {
 	setbuf(stdout, NULL);
 	printf("test\n");
-	if (argc < 4) {
+	if (argc != 5) {
 		printf("Missing command line arguments, exiting with error code -1\n");
 		return -1;
 	}
 //first initialize all variables. right now some are hard coded, until file input and argument input is coded
 
-	n = 4; //how many processes
-	m = 5; //how many resource types
 	int i, j; //i loops through processes. j loops through resources
 	char line[64];
 	char *bit;
