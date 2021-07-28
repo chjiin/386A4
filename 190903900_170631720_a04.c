@@ -4,8 +4,8 @@
 #include <ctype.h>
 
 //global variables
-int n = 5;//5 processes
-int m = 4;//4 resources
+int n = 5;//processes
+int m = 4;//resources
 
 int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) {
 	//int i;
@@ -13,7 +13,10 @@ int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 	int req[m];
 	int valid;
 
+	printf("line is %s\n", line);
+
 	char *bit = strtok(line, " ");
+	bit = strtok(NULL, " ");
 	int process = atoi(bit);
 
 	if (process == 0) {
@@ -38,7 +41,18 @@ int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 		return -1;
 	}
 //request algorithm
-//temp measure to remove warnings
+//first we check that all requests are below the need. requiring a for loop of m items
+	valid = 1;
+	for (j = 0; j < m; j++){
+		if (req[j] > need[process][j]){
+			valid = 0;
+		}
+	}
+	if(valid == 0){
+		printf("Given request exceeds maximum needed resources\n");
+	}
+
+	
 
 	return 0;
 }
@@ -54,8 +68,9 @@ int main(int argc, char **argv) {
 
 	int i, j; //i loops through processes. j loops through resources
 	char line[64];
+	char line2[64];
 	char *bit;
-
+	//line = "test";
 //initialize the 4 main arrays
 
 	int avail[n]; //this is set to be equal to the arguments
@@ -64,22 +79,22 @@ int main(int argc, char **argv) {
 	}
 
 	int max[n][m]; //initialized to sample_in
-	for (i = 0; i < m; i++) {
-		for (j = 0; j < n; j++) {
+	for (i = 0; i < n; i++) {
+		for (j = 0; j < m; j++) {
 			max[i][j] = 3; //----------------temporarily hard coded during testing. fix later
 		}
 	}
 
 	int allo[n][m]; //initialized to zero
-	for (i = 0; i < m; i++) {
-		for (j = 0; j < n; j++) {
+	for (i = 0; i < n; i++) {
+		for (j = 0; j < m; j++) {
 			allo[i][j] = 0;
 		}
 	}
 
 	int need[n][m]; //always equal to max - allo
-	for (i = 0; i < m; i++) {
-		for (j = 0; j < n; j++) {
+	for (i = 0; i < n; i++) {
+		for (j = 0; j < m; j++) {
 			need[i][j] = max[i][j];
 		}
 	}
@@ -98,9 +113,7 @@ int main(int argc, char **argv) {
 
 		//----------parse input
 		//the input can be one word or one word followed by ints. first check one word commands, the RL & RQ
-		if (strcmp(line, "status") == 1) {
-
-		} else if (strcmp(line, "Exit") == 0) {
+		if (strcmp(line, "Exit") == 0) {
 			//Exit code----------------------------------------------------------
 			printf("Now Exiting Program\n");
 			cont = 0;
@@ -111,16 +124,18 @@ int main(int argc, char **argv) {
 			//run code-----------------------------------------------------------
 			printf("run code\n");
 		} else {//one word commands have been checked, now check if command is RL or RQ
-			bit = strtok(line, " ");
+			
+			strcpy(line2, line);
+			bit = strtok(line2, " ");
 			if (strcmp(bit, "RQ") == 0) {
 				printf("RQ recognized\n");
 
 				//-----------------------------call RQ fxn
 
 				if (RQ(avail, max, allo, need, line) == 0) {
-					printf("RQ returned valid");
+					printf("RQ returned valid\n");
 				} else {
-					printf("RQ did not return valid");
+					printf("RQ did not return valid\n");
 				}
 
 			} else if (strcmp(bit, "RL") == 0) {
@@ -132,6 +147,6 @@ int main(int argc, char **argv) {
 			cont = 0;
 		}
 	}
-	printf("Program Terminated");
+	printf("Program Terminated\n");
 	return 0;
 }
