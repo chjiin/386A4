@@ -7,34 +7,35 @@
 int n;
 int m;
 
-int RQ( int avail, int max, int allo, int need, char* line);
-	bit = strtok(NULL, " ");
-	process = atoi(bit);
-	if (process == 0 && strcmp("0", bit) == 0){
-	//atoi returns 0 if invalid input, so if 0 is returned, manually check if bit == "0" 
+int RQ(int avail[], int max[][], int allo[][], int need[][], char line) {
+	//int i;
+	int j;
+	int req[m];
+	int valid;
+
+	char *bit = strtok(NULL, " ");
+	int process = atoi(bit);
+
+	if (process == 0) {
+		//atoi returns 0 if invalid input, so if 0 is returned, manually check if bit == "0"
 		valid = 0;
 	}
-	
+
 	for (j = 0; j < m; j++) {
 		bit = strtok(line, " ");
 		req[j] = atoi(bit);
-		if (process == 0 && strcmp("0", bit) == 0){
+		if (process == 0 && strcmp("0", bit) == 0) {
 			valid = 0;
 		}
 	}
-	if (valid == 0){
+	if (valid == 0) {
 		printf("Invalid RQ arguments\n");
 		return -1;
 	}
-	//request algorithm
-	
+//request algorithm
+//temp measure to remove warnings
 
-	//temp measure to remove warnings
-	
-
-	
-
-	return 0;	
+	return 0;
 }
 
 int main(int argc, char **argv) {
