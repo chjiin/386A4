@@ -4,13 +4,12 @@
 #include <ctype.h>
 
 //global variables
-int n;
-int m;
-
-int RQ(int avail[], int max[][], int allo[][], int need[][], char line) {
+int n;//processes
+int m;//resources
+int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) {
 	//int i;
 	int j;
-	int req[m];
+	//int req[m];
 	int valid;
 
 	char *bit = strtok(NULL, " ");
@@ -18,12 +17,15 @@ int RQ(int avail[], int max[][], int allo[][], int need[][], char line) {
 
 	if (process == 0) {
 		//atoi returns 0 if invalid input, so if 0 is returned, manually check if bit == "0"
-		valid = 0;
+		int result = strcmp(bit, "0");
+		if (result != 0){
+			valid = 0;
+		}
 	}
 
 	for (j = 0; j < m; j++) {
 		bit = strtok(line, " ");
-		req[j] = atoi(bit);
+		//req[j] = atoi(bit);
 		if (process == 0 && strcmp("0", bit) == 0) {
 			valid = 0;
 		}
@@ -126,9 +128,9 @@ int main(int argc, char **argv) {
 				printf("Invalid Input\n");
 			}
 			printf("Looping now\n");
-			//cont = 0;
+			cont = 0;
 		}
 	}
-
+	printf("Program Terminated");
 	return 0;
 }
