@@ -11,12 +11,17 @@ int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 	//int i;
 	int j;
 	int req[m];
-	int valid;
+	int valid = 1;
 
-	printf("line is %s\n", line);
-
+	//printf("line is %s\n", line);
+	//first step is extract process number from command
 	char *bit = strtok(line, " ");
 	bit = strtok(NULL, " ");
+	if (bit == NULL){
+		printf("Not enough arguments given\n");
+		return -1;
+	}
+
 	int process = atoi(bit);
 
 	if (process == 0) {
@@ -24,36 +29,85 @@ int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 		int result = strcmp(bit, "0");
 		if (result != 0){
 			valid = 0;
+			printf("error checking process on argument -%s-\n", bit);
 		}
 	}
-	printf("test2: process = %d\n", process);
+	//printf("test2: process = %d\n", process);
 
+//second step is extract resource request amounts from command
 	for (j = 0; j < m; j++) {
 		bit = strtok(NULL, " ");
+		if (bit == NULL){
+			printf("Not enough arguments given\n");
+			return -1;
+		}
 		req[j] = atoi(bit);
-		if (req[j] == 0 && strcmp(bit, "0") == 0) {
-			valid = 0;
+		if (req[j] == 0) {
+		//atoi returns 0 if invalid input, so if 0 is returned, manually check if bit == "0"
+			int result = strcmp(bit, "0");
+			if (result != 0) {
+				valid = 0;
+				printf("error checking req on argument -%s-\n", bit);
+			}
 		}
 	}
-	printf("test3\n");
-	if (valid == 0) {
-		printf("Invalid RQ arguments\n");
+	bit = strtok(NULL, " ");
+	if (bit != NULL){
+		printf("Too many arguments given\n");
 		return -1;
 	}
-//request algorithm
+	if (valid == 0) {
+		printf("Valid = 0\n");
+		return -1;
+	}
+	
+	//print status for testing purposes
+	for (j = 0; j < m; j++){
+		printf("%d, ", req[j]);
+	}
+	printf("\n");
+
+
+//the process number is now held in process. the resource request numbers are held in req[]
+//request algorithm starts--------------------------------------------
 //first we check that all requests are below the need. requiring a for loop of m items
 	valid = 1;
 	for (j = 0; j < m; j++){
 		if (req[j] > need[process][j]){
 			valid = 0;
+			printf("req[j] = %d exceeds need[process][j] = %d\n", req[j], need[process][j]);
 		}
 	}
 	if(valid == 0){
 		printf("Given request exceeds maximum needed resources\n");
+		return -1;
 	}
-
+	valid = 1;
+	
+	for (j = 0; j < m; j++){
+		if (req[j] > avail[j]){
+			valid = 0;
+		}
+	}
+	
+	if(valid == 0){
+	//the request is granted but the thread has to wait until resources are freed up
+		printf("Request granted. Thread is waiting\n");
+	}
+	if(valid == 1){	
+		printf("running safety algorithm\n");
+		for (j = 0; j < m; j++){//temporarily change arrays for the safety algorithm
+			avail[j] = avail[j] - req[j];
+			allo[process][j] = allo[process][j] - req[j];
+			need[process][j] = need[process][j] - req[j];
+		}
+	}
+	//then run safety algorithm
 	
 
+	//then return arrays to original state if safety algorithm is not satisfied
+
+	
 	return 0;
 }
 
@@ -121,6 +175,7 @@ int main(int argc, char **argv) {
 	}
 	int cont = 1;
 
+
 	while (cont) { //------------the main loop
 
 		//-----------take input
@@ -130,7 +185,7 @@ int main(int argc, char **argv) {
 
 		//line[strlen(line) - 1] = '\0';
 
-		printf("input is -%s-\n", line);
+		//printf("input is -%s-\n", line);
 
 		//----------parse input
 		//the input can be one word or one word followed by ints. first check one word commands, the RL & RQ
@@ -154,9 +209,9 @@ int main(int argc, char **argv) {
 				//-----------------------------call RQ fxn
 
 				if (RQ(avail, max, allo, need, line) == 0) {
-					printf("RQ returned valid\n");
+					//printf("RQ returned valid\n");
 				} else {
-					printf("RQ did not return valid\n");
+					//printf("RQ did not return valid\n");
 				}
 
 			} else if (strcmp(bit, "RL") == 0) {
@@ -164,7 +219,7 @@ int main(int argc, char **argv) {
 			} else {
 				printf("Invalid Input\n");
 			}
-			printf("Looping now\n");
+			//printf("End of Loop\n");
 			cont = 0;
 		}
 	}
