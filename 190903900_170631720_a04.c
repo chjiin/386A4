@@ -231,7 +231,7 @@ int RL(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 	int j;
 	int rel[m];
 	int valid = 1;	
-	
+
 
 	//first step is extract process number from command	
 	char *bit = strtok(line, " ");
@@ -279,7 +279,7 @@ int RL(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 		printf("Invalid Arguments\n");
 		return -1;
 	}
-	
+
 //the process number is now held in process. the resource release numbers are held in rel[]
 	valid = 1;
 	for (j = 0; j < m; j++){
@@ -293,13 +293,13 @@ int RL(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 	}
 	//at this point the request is valid, update arrays
 	for (j = 0; j < m; j++){
-		
+
 		allo[process][j] = allo[process][j] - rel[j];
 		//printf("ALLO: %d", );
 		need[process][j] = max[process][j]-allo[process][j];
 	}
 
-	
+
 	return 0;
 }
 
