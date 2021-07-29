@@ -164,7 +164,7 @@ int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 	
 	return 0;
 }
-
+//MAIN------------------------------------------------------------------------------
 int main(int argc, char **argv) {
 	setbuf(stdout, NULL);
 	printf("Number of Customers: %d\n", n);
@@ -211,7 +211,7 @@ int main(int argc, char **argv) {
 	int max[n][m]; //initialized to sample_in
 	for (i = 0; i < n; i++) {
 		for (j = 0; j < m; j++) {
-			max[i][j] = filestr[k];
+			max[i][j] = filestr[k] - 48;
 			k++;
 		}
 	}
@@ -219,10 +219,10 @@ int main(int argc, char **argv) {
 	for (i = 0; i < n; i++) {
 		printf("\n");
 		for (j = 0; j < m; j++) {
-			printf("%c ", max[i][j]);
+			printf("%d ", max[i][j]);
 		}
 	}
-	
+	printf("\n");
 	//FILE INPUT ENDS HERE==============================================
 
 	int allo[n][m]; //initialized to zero
@@ -267,21 +267,21 @@ int main(int argc, char **argv) {
 			for (i = 0; i < n; i++) {
 				printf("\n");
 				for (j = 0; j < m; j++) {
-					printf("%c ", max[i][j]);
+					printf("%d ", max[i][j]);
 				}
 			}
 			printf("\nAllocated Resources:\n");
 			for (i = 0; i < n; i++) {
 				printf("\n");
 				for (j = 0; j < m; j++) {
-					printf("%c ", allo[i][j]);
+					printf("%d ", allo[i][j]);
 				}
 			}
 			printf("\nNeed Resources:\n");
 			for (i = 0; i < n; i++) {
 				printf("\n");
 				for (j = 0; j < m; j++) {
-					printf("%c ", need[i][j]);
+					printf("%d ", need[i][j]);
 				}
 			}
 		} else if (strcmp(line, "Run") == 0) {
