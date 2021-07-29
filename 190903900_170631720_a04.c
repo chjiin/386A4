@@ -103,7 +103,7 @@ int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 			need[process][j] = need[process][j] - req[j];
 		}
 	}
-	//SAFETY ALGORRITHM STARTS HERE---------------------------
+	//SAFETY ALGORITHM STARTS HERE---------------------------
 	int work[m];
 	int finish[n];
 	for (i = 0; i < n; i++){
@@ -167,7 +167,7 @@ int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 
 int main(int argc, char **argv) {
 	setbuf(stdout, NULL);
-	printf("test\n");
+	printf("Number of Customers: %d\n", n);
 	if (argc != 5) {
 		printf("Missing command line arguments, exiting with error code -1\n");
 		return -1;
@@ -179,7 +179,7 @@ int main(int argc, char **argv) {
 	char line[64];
 	char line2[64];
 	char *bit;
-	//line = "test";
+
 //initialize the 4 main arrays
 
 	int avail[m]; //this is set to be equal to the arguments
@@ -187,12 +187,11 @@ int main(int argc, char **argv) {
 		avail[i] = atoi(argv[i+1]);
 		//printf("avail: %d\n", avail[i]);
 	}
-	/*
 	printf("Currently Available resources: ");
 	for(i = 0; i < m; i++){
 		printf("%d ", avail[i]);
 	}
-	*/
+	
 	//FILE INPUT STARTS HERE==============================================
 
 	FILE* maxin = fopen("sample4_in.txt", "r");
@@ -216,16 +215,14 @@ int main(int argc, char **argv) {
 			k++;
 		}
 	}
-	
-	//printf("\nMaximum resources from file:");
-	/*
+	printf("\nMaximum resources from file:");
 	for (i = 0; i < n; i++) {
 		printf("\n");
 		for (j = 0; j < m; j++) {
 			printf("%c ", max[i][j]);
 		}
 	}
-	*/
+	
 	//FILE INPUT ENDS HERE==============================================
 
 	int allo[n][m]; //initialized to zero
@@ -247,7 +244,7 @@ int main(int argc, char **argv) {
 	while (cont) { //------------the main loop
 
 		//-----------take input
-		
+		printf("Enter Command: ");
 		scanf("%[^\n]%*c", line);
 		//printf("input is -%s-\n", line);
 
@@ -259,7 +256,34 @@ int main(int argc, char **argv) {
 			cont = 0;
 		} else if (strcmp(line, "Status") == 0) {
 			//status display code------------------------------------------------
-			printf("Status display code\n");
+			
+				
+			printf("Available Resources:\n");
+			for(i = 0; i < m; i++){
+				printf("%d ", avail[i]);
+			}
+	
+			printf("\nMaximum Resources:\n");
+			for (i = 0; i < n; i++) {
+				printf("\n");
+				for (j = 0; j < m; j++) {
+					printf("%c ", max[i][j]);
+				}
+			}
+			printf("\nAllocated Resources:\n");
+			for (i = 0; i < n; i++) {
+				printf("\n");
+				for (j = 0; j < m; j++) {
+					printf("%c ", allo[i][j]);
+				}
+			}
+			printf("\nNeed Resources:\n");
+			for (i = 0; i < n; i++) {
+				printf("\n");
+				for (j = 0; j < m; j++) {
+					printf("%c ", need[i][j]);
+				}
+			}
 		} else if (strcmp(line, "Run") == 0) {
 			//run code-----------------------------------------------------------
 			printf("run code\n");
@@ -283,10 +307,8 @@ int main(int argc, char **argv) {
 			} else {
 				printf("Invalid Input\n");
 			}
-			//printf("End of Loop\n");
-			cont = 0;
 		}
 	}
-	printf("Program Terminated\n");
+	//printf("Program Terminated\n");
 	return 0;
 }
