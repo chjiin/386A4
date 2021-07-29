@@ -7,6 +7,50 @@
 int n = 5;//processes
 int m = 4;//resources
 
+int Run(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) {
+	int valid = 1;
+	int i = 0;
+	int j = 0;
+	int k = 0;
+	int order[n];
+	int finish[n];
+	for (i = 0; i < n; i++){
+		finish[i] = 0;
+	}
+	
+	while(i < n){//we have to run through this loop until no i satisfies condition
+		valid = 1;
+		//find index i which satisfies condition
+		if(finish[i] == 0){
+			for(j=0; j<m; j++){
+				if (need[i][j] > avail[j]){
+					valid = 0;
+				}//valid is 1 if need <= work every time
+			}
+			if(valid == 1){//an i satisfying the condition has been found
+				//we release resources for this thread
+				for(j=0; j<m; j++){
+					avail[j] = avail[j] + allo[i][j];
+					allo[i][j] = 0;
+					need[i][j] = max[i][j];
+					finish[i] = 1;
+					order[k] = i;
+					k++;
+				}
+				i = 0;//search the list from top with the new avail values
+			} else {
+				i++;
+			}
+		} else {
+			i++;
+		}
+		//every loop, i is incremented or set to 0, and if set to zero, finish[i] is set to 1
+	}
+	//we know that at this point all of finish is 1, because no deadlocks are possible with our safety algorithm
+	//order k stores the safe sequence
+	return 0;
+}
+
 int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) {
 	int i;
 	int j;
@@ -99,7 +143,7 @@ int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 		printf("running safety algorithm\n");
 		for (j = 0; j < m; j++){//temporarily change arrays for the safety algorithm
 			avail[j] = avail[j] - req[j];
-			allo[process][j] = allo[process][j] - req[j];
+			allo[process][j] = allo[process][j] + req[j];
 			need[process][j] = need[process][j] - req[j];
 		}
 	}
@@ -107,12 +151,18 @@ int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 	int work[m];
 	int finish[n];
 	for (i = 0; i < n; i++){
-		finish[i] = 0;
+		finish[i] = 1;
+		for (j = 0; j < m; j++){
+			if(allo[i][j] != 0){
+				finish[i] = 0;
+			}
+		}
 	}
 	for (j = 0; j < m; j++){
 		work[j] = avail[j];
+		printf("%d, ", avail[j]);
 	}
-	
+	printf("\n");
 	i = 0;
 	while(i < n){//we have to run through this loop until no i satisfies condition
 		valid = 1;
@@ -127,8 +177,13 @@ int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 				//we pretend this program has finished and releases resources
 				for(j=0; j<m; j++){
 					work[j] = work[j] + allo[i][j];
-					finish[i] = 1;
 				}
+				finish[i] = 1;
+							
+				for (j = 0; j < m; j++){
+					printf("%d, ", work[j]);
+				}
+				printf("\n");
 				i = 0;
 			} else {
 				i++;
@@ -155,7 +210,7 @@ int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 		//then return arrays to original state if safety algorithm is not satisfied
 		for(j=0; j<m; j++){
 			avail[j] = avail[j] + req[j];
-			allo[process][j] = allo[process][j] + req[j];
+			allo[process][j] = allo[process][j] - req[j];
 			need[process][j] = need[process][j] + req[j];
 		}
 		printf("Request Denied: Safety Algorithm Failed\n");
@@ -185,7 +240,6 @@ int main(int argc, char **argv) {
 	int avail[m]; //this is set to be equal to the arguments
 	for (i = 0; i < m; i++) {
 		avail[i] = atoi(argv[i+1]);
-		//printf("avail: %d\n", avail[i]);
 	}
 	printf("Currently Available resources: ");
 	for(i = 0; i < m; i++){
