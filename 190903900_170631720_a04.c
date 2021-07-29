@@ -51,6 +51,83 @@ int Run(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line)
 	return 0;
 }
 
+int RL(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) {
+	int i;
+	int j;
+	int rel[m];
+	int valid = 1;	
+	
+
+	//first step is extract process number from command	
+	char *bit = strtok(line, " ");
+	bit = strtok(NULL, " ");
+	if (bit == NULL){
+		printf("Not enough arguments given\n");
+		return -1;
+	}
+
+	int process = atoi(bit);
+
+	if (process == 0) {
+		//atoi returns 0 if invalid input, so if 0 is returned, manually check if bit == "0"
+		int result = strcmp(bit, "0");
+		if (result != 0){
+			valid = 0;
+			//printf("error checking process on argument -%s-\n", bit);
+		}
+	}
+	//printf("test2: process = %d\n", process);
+
+//second step is extract resource releases from command
+	for (j = 0; j < m; j++) {
+		bit = strtok(NULL, " ");
+		if (bit == NULL){
+			printf("Not enough arguments given\n");
+			return -1;
+		}
+		rel[j] = atoi(bit);
+		if (rel[j] == 0) {
+		//atoi returns 0 if invalid input, so if 0 is returned, manually check if bit == "0"
+			int result = strcmp(bit, "0");
+			if (result != 0) {
+				valid = 0;
+				//printf("error checking req on argument -%s-\n", bit);
+			}
+		}
+	}
+	bit = strtok(NULL, " ");
+	if (bit != NULL){
+		printf("Too many arguments given\n");
+		return -1;
+	}
+	if (valid == 0) {
+		printf("Invalid Arguments\n");
+		return -1;
+	}
+	
+//the process number is now held in process. the resource release numbers are held in rel[]
+	valid = 1;
+	for (j = 0; j < m; j++){
+		if (rel[j] > allo[process][j]){//if trying to release more than currently allocated
+			valid = 0;
+		}
+	}
+	if(valid == 0){
+		printf("Release exceeds allocated resources\n");
+		return -1;
+	}
+	//at this point the request is valid, update arrays
+	for (j = 0; j < m; j++){
+		
+		allo[process][j] = allo[process][j] - rel[j];
+		//printf("ALLO: %d", );
+		need[process][j] = max[process][j]-allo[process][j];
+	}
+
+	
+	return 0;
+}
+
 int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) {
 	int i;
 	int j;
@@ -358,6 +435,8 @@ int main(int argc, char **argv) {
 
 			} else if (strcmp(bit, "RL") == 0) {
 				//Process Release code-------------------------------------------
+				
+				RL(avail, max, allo, need, line);
 			} else {
 				printf("Invalid Input\n");
 			}
