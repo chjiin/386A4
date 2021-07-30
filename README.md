@@ -3,7 +3,7 @@
 ## Banker's Alorithm
 This project implements Banker's Alogrithm in C. 
 
-##Installation
+## Installation
 
 
 You have to maintain the README.md file for the repository to explain the following: 
