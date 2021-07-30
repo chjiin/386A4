@@ -4,8 +4,8 @@
 #include <ctype.h>
 
 //global variables
-int n = 5;//processes
-int m = 4;//resources
+int n;//processes
+int m;//resources
 
 int Run(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) {
 	int valid = 1;
