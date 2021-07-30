@@ -231,11 +231,9 @@ int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 }
 
 int RL(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) {
-	int i;
 	int j;
 	int rel[m];
 	int valid = 1;	
-
 
 	//first step is extract process number from command	
 	char *bit = strtok(line, " ");
@@ -311,62 +309,61 @@ int RL(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 //MAIN------------------------------------------------------------------------------
 int main(int argc, char **argv) {
 	setbuf(stdout, NULL);
-	printf("Number of Customers: %d\n", n);
-	if (argc != 5) {
-		printf("Missing command line arguments, exiting with error code -1\n");
-		return -1;
-	}
-	
-//first initialize all variables. right now some are hard coded, until file input and argument input is coded
+
+	//first initialize all variables. right now some are hard coded, until file input and argument input is coded
 
 	int i, j; //i loops through processes. j loops through resources
 	char line[64];
 	char line2[64];
 	char *bit;
 
-//initialize the 4 main arrays
+	//second, fill max array and find values of n and m
+	//FILE INPUT STARTS HERE==============================================
+	//recall there will be m rows and n columns
+
+	FILE* maxin = fopen("sample4_in.txt", "r");
+	char a = 0;//cycles through characters in file
+	int hold = 0; //this is for 2 digit numbers
+	i = 0;//holds row
+	j = 0;//holds column
+	int max[20][20];
+	while ((a = fgetc(maxin)) != EOF){
+		if(isdigit(a)){//add number to hold
+			hold = (int)a - 48 + 10 * hold;		
+		} else if (a == '\n'){//save number and increment i and set j to 0
+			max[i][j] = hold;
+			hold = 0;
+			i++;
+			j = 0;
+		} else if (a == ','){//save number and continue
+			max[i][j] = hold;
+			hold = 0;
+			j++;
+		}
+	}
+	n = i + 1;
+	m = j + 1;
+	fclose(maxin);
+
+	//FILE INPUT ENDS HERE==============================================
+
+
+	printf("Number of Customers: %d\n", n);//---------print1
+	if (argc != m+1) {
+		printf("Missing command line arguments, exiting with error code -1\n");
+		return -1;
+	}
+
+	//initialize the other 3 main arrays
 
 	int avail[m]; //this is set to be equal to the arguments
 	for (i = 0; i < m; i++) {
 		avail[i] = atoi(argv[i+1]);
 	}
-	printf("Currently Available resources: ");
+	printf("Currently Available resources: ");//---------print2
 	for(i = 0; i < m; i++){
 		printf("%d ", avail[i]);
 	}
-	
-	//FILE INPUT STARTS HERE==============================================
-
-	FILE* maxin = fopen("sample4_in.txt", "r");
-	int a = 0;
-	int k = 0;
-	char filestr[64];
-	while ((a = fgetc(maxin)) != EOF){
-		if(isdigit((int)a)){
-			filestr[k] = a;
-			k++;
-		}
-	}
-
-	fclose(maxin);
-
-	k = 0;
-	int max[n][m]; //initialized to sample_in
-	for (i = 0; i < n; i++) {
-		for (j = 0; j < m; j++) {
-			max[i][j] = filestr[k] - 48;
-			k++;
-		}
-	}
-	printf("\nMaximum resources from file:");
-	for (i = 0; i < n; i++) {
-		printf("\n");
-		for (j = 0; j < m; j++) {
-			printf("%d ", max[i][j]);
-		}
-	}
-	printf("\n");
-	//FILE INPUT ENDS HERE==============================================
 
 	int allo[n][m]; //initialized to zero
 	for (i = 0; i < n; i++) {
@@ -381,10 +378,18 @@ int main(int argc, char **argv) {
 			need[i][j] = max[i][j];
 		}
 	}
+
+	printf("\nMaximum resources from file:"); //---------print3
+	for (i = 0; i < n; i++) {
+		printf("\n");
+		for (j = 0; j < m; j++) {
+			printf("%d ", max[i][j]);
+		}
+	}
+	printf("\n");
+	//-----------------------------------------------------------------------the main loop
 	int cont = 1;
-
-
-	while (cont) { //------------the main loop
+	while (cont) { 
 
 		//-----------take input
 		printf("Enter Command: ");
