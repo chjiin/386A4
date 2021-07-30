@@ -15,6 +15,7 @@ int Run(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line)
 	int order[n];
 	int finish[n];
 	for (i = 0; i < n; i++){
+		order[i] = -1;
 		finish[i] = 1;
 		for (j = 0; j < m; j++){
 			if(allo[i][j] != 0){
@@ -22,7 +23,7 @@ int Run(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line)
 			}
 		}
 	}
-	
+	i = 0;
 	while(i < n){//we have to run through this loop until no i satisfies condition
 		valid = 1;
 		//find index i which satisfies condition
@@ -31,7 +32,6 @@ int Run(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line)
 			for(j=0; j<m; j++){
 				if (need[i][j] > avail[j]){
 					valid = 0;
-					printf("%d > %d in process %d\n", need[i][j], avail[j], i);
 				}//valid is 1 if need <= work every time
 			}
 			if(valid == 1){//an i satisfying the condition has been found
@@ -42,6 +42,7 @@ int Run(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line)
 					need[i][j] = max[i][j];				
 				}
 				finish[i] = 1;
+				order[k] = i;
 				k++;
 				i = 0;//search the list from top with the new avail values
 			} else {
@@ -55,11 +56,14 @@ int Run(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line)
 	//we know that at this point all of finish is 1, because no deadlocks are possible with our safety algorithm
 	//order stores the safe sequence
 	int length = k;
-	printf("order (%d items) is: ", k);
+	printf("Safe Sequence is: ");
 	for(k=0;k<length; k++){
-		printf("%d, ", order[k]);
+		printf("%d ", order[k]);
 	}
 	printf("\n");
+	
+	
+
 
 	return 0;
 }
@@ -297,6 +301,7 @@ int RL(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 		allo[process][j] = allo[process][j] - rel[j];
 		//printf("ALLO: %d", );
 		need[process][j] = max[process][j]-allo[process][j];
+		avail[j] = avail[j] + rel[j];
 	}
 
 
