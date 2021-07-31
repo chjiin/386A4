@@ -46,16 +46,6 @@ make
 ![alt text](https://i.ibb.co/cwPdFNY/p2.png)
 ![alt text](https://i.ibb.co/9Nz7Sh9/p3.png)
 
+## README
+GNU GENERAL PUBLIC LICENSE
 
-• Project title 
-• Motivation 
-• Installation 
-• Screenshots 
-• Individual contribution 
-(Function-wise) 
-• Features 
-• Tests cases (if any) 
-• Use examples 
-• About Developers 
-• Credits 
-• License to use your code 
