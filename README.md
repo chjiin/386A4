@@ -29,14 +29,14 @@ make
 
 ## Features & User Commands
 It is assumed that the user is familiar with Banker's Alogrithm and it's uses.
-### RQ thread# resource1 resource2 resource3 resource4
+##### RQ thread# resource1 resource2 resource3 resource4
   - Requests resources to allocate to given thread number.
-### RL thread# resource1 resource2 resource3 resource4  
-  - Releases input resources for given thread.
-### Status
-  - Displays status of all arrays customers.
-### Run
-  - Executes all threads and allocates and deallocates resources.
+##### RL thread# resource1 resource2 resource3 resource4  
+  - Releases input resources for given thread
+##### Status
+  - Displays status of all arrays customers
+##### Run
+  - Executes the threads in a safe sequence and allocates and deallocates resources.
 
 ## Use Examples and Sample Ouput
 
@@ -51,3 +51,15 @@ make
 ## License
 Licensed under GNU GENERAL PUBLIC LICENSE
 
+• Project title 
+• Motivation 
+• Installation 
+• Screenshots 
+• Individual contribution 
+(Function-wise) 
+• Features 
+• Tests cases (if any) 
+• Use examples 
+• About Developers 
+• Credits 
+• License to use your code 
