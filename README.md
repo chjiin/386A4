@@ -51,15 +51,3 @@ make
 ## License
 Licensed under GNU GENERAL PUBLIC LICENSE
 
-• Project title 
-• Motivation 
-• Installation 
-• Screenshots 
-• Individual contribution 
-(Function-wise) 
-• Features 
-• Tests cases (if any) 
-• Use examples 
-• About Developers 
-• Credits 
-• License to use your code 
