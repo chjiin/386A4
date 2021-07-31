@@ -35,13 +35,13 @@ void* Threadrun(int v, int ** avail, int ** max, int ** allo, int ** need) {
 	for(j=0; j<m; j++){
 		//freeing resources means:
 
-		allo[v*m+j] = 0;//allo decreases by max
-		need[v*m+j] = max[v*m+j];//need is set equal to max
-		avail[j] = avail[j] + max[v*m+j];//avail increases by max
+		*(allo[v*m+j]) = 0;//allo decreases by max
+		*(need[v*m+j]) = *(max[v*m+j]);//need is set equal to max
+		*(avail[j]) = *(avail[j]) + *(max[v*m+j]);//avail increases by max
 	}
 	printf("New Available: ");
 	for (j=0; j<m; j++){
-		printf("%d ", avail[j]);
+		printf("%d ", *(avail[j]));
 	}
 	printf("\n");
 /*
@@ -77,20 +77,19 @@ int Run(int ** avail, int ** max, int ** allo, int ** need, pthread_t ** tid) {
 	//printf("At start, allo =:\n");
 	for(i = 0;i < n; i++){
 		for(j = 0; j < m; j++){
-			//printf("%d ", allo[i][j]);
-			allo2[i][j]=allo[i*m+j];
+			allo2[i][j]= *(allo[i*m+j]);
 		}
 	}
 	//printf("\n");
 	for(i = 0;i < 4; i++){
-		avail2[i]=avail[i];
+		avail2[i]= *(avail[i]);
 	}
 	for(i = 0;i < n; i++){
 		for(j = 0; j < m; j++){
-			need2[i][j]=need[i*m+j];
+			need2[i][j]=*(need[i*m+j]);
 		}
 	}
-    //Duplicating Arrays ================================
+    //Duplicating Arrays Finished ================================
 
 	for (i = 0; i < n; i++){
 		order[i] = -1;
@@ -120,7 +119,7 @@ int Run(int ** avail, int ** max, int ** allo, int ** need, pthread_t ** tid) {
 				for(j=0; j<m; j++){
 					avail2[j] = avail2[j] + allo2[i][j];
 					allo2[i][j] = 0;
-					need2[i][j] = max[i*m+j];				
+					need2[i][j] = *(max[i*m+j]);				
 				}
                 
 				finish[i] = 1;
@@ -156,18 +155,18 @@ int Run(int ** avail, int ** max, int ** allo, int ** need, pthread_t ** tid) {
 		for (k=0; k<n; k++){
 			printf("\n");
 			for(j=0; j<m; j++){
-				printf("%d ", allo[k*m+j]);
+				printf("%d ", *(allo[k*m+j]));
 			}
 		}
 		printf("\n");
 		printf("Needed: ");
 		for (j=0; j<m; j++){
-			printf("%d ", need[order[v]*m+j]);
+			printf("%d ", *(need[order[v]*m+j]));
 		}
 		printf("\n");
 		printf("Available: ");
 		for (j=0; j<m; j++){
-			printf("%d ", avail[j]);
+			printf("%d ", *(avail[j]));
 		}
 		printf("\n");
 
@@ -254,7 +253,7 @@ int RQ(int ** avail, int ** max, int ** allo, int ** need, char *line) {
 //first we check that all requests are below the need. requiring a for loop of m items
 	valid = 1;
 	for (j = 0; j < m; j++){
-		if (req[j] > need[process][j]){
+		if (req[j] > *(need[process*m+j])){
 			valid = 0;
 			//printf("req[j] = %d exceeds need[process][j] = %d\n", req[j], need[process][j]);
 		}
@@ -266,7 +265,7 @@ int RQ(int ** avail, int ** max, int ** allo, int ** need, char *line) {
 	valid = 1;
 	
 	for (j = 0; j < m; j++){
-		if (req[j] > avail[j]){
+		if (req[j] > *(avail[j])){
 			valid = 0;
 		}
 	}
@@ -277,9 +276,9 @@ int RQ(int ** avail, int ** max, int ** allo, int ** need, char *line) {
 	}
 	if(valid == 1){		
 		for (j = 0; j < m; j++){//temporarily change arrays for the safety algorithm
-			avail[j] = avail[j] - req[j];
-			allo[process][j] = allo[process][j] + req[j];
-			need[process][j] = need[process][j] - req[j];
+			*(avail[j]) = *(avail[j]) - req[j];
+			*(allo[process*m+j]) = *(allo[process*m+j]) + req[j];
+			*(need[process*m+j]) = *(need[process*m+j]) - req[j];
 		}
 	}
 	//SAFETY ALGORITHM STARTS HERE---------------------------
@@ -288,7 +287,7 @@ int RQ(int ** avail, int ** max, int ** allo, int ** need, char *line) {
 	for (i = 0; i < n; i++){
 		finish[i] = 1;
 		for (j = 0; j < m; j++){
-			if(allo[i][j] != 0){
+			if(*(allo[i*m+j]) != 0){
 				finish[i] = 0;
 			}
 		}
@@ -302,14 +301,14 @@ int RQ(int ** avail, int ** max, int ** allo, int ** need, char *line) {
 		//find index i which satisfies condition
 		if(finish[i] == 0){
 			for(j=0; j<m; j++){
-				if (need[i][j] > work[j]){
+				if (*(need[i*m+j]) > work[j]){
 					valid = 0;
 				}//valid is 1 if need <= work every time
 			}
 			if(valid == 1){//an i satisfying the condition has been found
 				//we pretend this program has finished and releases resources
 				for(j=0; j<m; j++){
-					work[j] = work[j] + allo[i][j];
+					work[j] = work[j] + *(allo[i*m+j]);
 				}
 				finish[i] = 1;
 				
@@ -338,9 +337,9 @@ int RQ(int ** avail, int ** max, int ** allo, int ** need, char *line) {
 	} else {
 		//then return arrays to original state if safety algorithm is not satisfied
 		for(j=0; j<m; j++){
-			avail[j] = avail[j] + req[j];
-			allo[process][j] = allo[process][j] - req[j];
-			need[process][j] = need[process][j] + req[j];
+			*(avail[j]) = *(avail[j]) + req[j];
+			*(allo[process*m+j]) = *(allo[process*m+j]) - req[j];
+			*(need[process*m+j]) = *(need[process*m+j]) + req[j];
 		}
 		printf("Request Denied: Safety Algorithm Failed\n");
 		return -1;
@@ -405,7 +404,7 @@ int RL(int ** avail, int ** max, int ** allo, int ** need, char *line) {
 //the process number is now held in process. the resource release numbers are held in rel[]
 	valid = 1;
 	for (j = 0; j < m; j++){
-		if (rel[j] > allo[process*m+j]){//if trying to release more than currently allocated
+		if (rel[j] > *(allo[process*m+j])){//if trying to release more than currently allocated
 			valid = 0;
 		}
 	}
@@ -415,9 +414,9 @@ int RL(int ** avail, int ** max, int ** allo, int ** need, char *line) {
 	}
 	//at this point the request is valid, update arrays
 	for (j = 0; j < m; j++){
-		allo[process*m+j] = allo[process*m+j] - rel[j];
-		need[process*m+j] = need[process*m+j] + rel[j];
-		avail[j] = avail[j] + rel[j];
+		*(allo[process*m+j]) = *(allo[process*m+j]) - rel[j];
+		*(need[process*m+j]) = *(need[process*m+j]) + rel[j];
+		*(avail[j]) = *(avail[j]) + rel[j];
 	}
 
 	return 0;
