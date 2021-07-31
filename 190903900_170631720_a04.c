@@ -2,23 +2,71 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-
+#include <pthread.h>
 //global variables
-int n;//processes
-int m;//resources
+int n = 5;//processes
+int m = 4;//resources
 
-int Run(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) {
+
+void* Threadrun(int i, int avail[m], int max[n][m], int allo[n][m], int need[n][m]) {
+	//this is run by all threads
+	int j;
+	printf("Thread has started\n");
+	for(j=0; j<m; j++){
+		avail[j] = avail[j] - need[i][j];//takes from available resources
+		allo[i][j] = allo[i][j] + need[i][j];//those resources go to allo
+		need[i][j] = 0;
+	}
+	//thread now holds max resources. avail is lower and need is zero
+	printf("Thread has finished\n");
+	printf("Thead is releasing resources\n");
+	for(j=0; j<m; j++){
+		//freeing resources means:
+		avail[j] = avail[j] + max[i][j];//avail increases by max
+		allo[i][j] = allo[i][j] - max[i][j];//allo decreases by max
+		need[i][j] = max[i][j];//need is set equal to max
+	}
+	printf("New Available: ");
+	for (j=0; j<m; j++){
+		printf("%d ", avail[j]);
+	}
+	printf("\n");
+	return NULL;
+}
+
+int Run(int avail[m], int max[n][m], int allo[n][m], int need[n][m], pthread_t tid[n]) {
 	int valid = 1;
 	int i = 0;
 	int j = 0;
+	int err;
 	int k = 0;
 	int order[n];
 	int finish[n];
+	int allo2[n][m];
+	int avail2[m];
+	int need2[n][m];
+
+	//Duplicating Arrays ================================
+    for(i = 0;i < n; i++){
+        for(j = 0; j < m; j++){
+            allo2[i][j]=allo[i][j];
+        }
+    }
+	for(i = 0;i < 4; i++){
+            avail2[i]=avail[i];
+    }
+	for(i = 0;i < n; i++){
+        for(j = 0; j < m; j++){
+            need2[i][j]=need[i][j];
+        }
+    }
+    //Duplicating Arrays ================================
+
 	for (i = 0; i < n; i++){
 		order[i] = -1;
 		finish[i] = 1;
 		for (j = 0; j < m; j++){
-			if(allo[i][j] != 0){
+			if(allo2[i][j] != 0){
 				finish[i] = 0;
 			}
 		}
@@ -30,17 +78,19 @@ int Run(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line)
 		if(finish[i] == 0){
 			
 			for(j=0; j<m; j++){
-				if (need[i][j] > avail[j]){
+				if (need[i][j] > avail2[j]){
 					valid = 0;
 				}//valid is 1 if need <= work every time
 			}
 			if(valid == 1){//an i satisfying the condition has been found
 				//we release resources for this thread
+                
 				for(j=0; j<m; j++){
-					avail[j] = avail[j] + allo[i][j];
-					allo[i][j] = 0;
-					need[i][j] = max[i][j];				
+					avail2[j] = avail2[j] + allo2[i][j];
+					allo2[i][j] = 0;
+					need2[i][j] = max[i][j];				
 				}
+                
 				finish[i] = 1;
 				order[k] = i;
 				k++;
@@ -60,11 +110,38 @@ int Run(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line)
 	for(k=0;k<length; k++){
 		printf("%d ", order[k]);
 	}
-	printf("\n");
 	
-	
+	//SECOND HALF OF RUN---------------------------------------------
+	i = 0;//holds placement in safe sequence
+	for(i=0;i<length; i++){
+		printf("--> Customer/Thread %d\n", order[i]);
+		printf("Allocated resources: ");
+		for (j=0; j<m; j++){
+			printf("%d ", allo[i][j]);
+		}
+		printf("\n");
+		printf("Needed: ");
+		for (j=0; j<m; j++){
+			printf("%d ", need[i][j]);
+		}
+		printf("\n");
+		printf("Available: ");
+		for (j=0; j<m; j++){
+			printf("%d ", avail[j]);
+		}
+		printf("\n");
 
-
+		//run thread function
+		printf("TID: %s", tid[order[i]]);
+		err = pthread_create(&(tid[order[i]]), NULL, Threadrun(order[i], avail, max, allo, need), NULL);
+		if (err != 0){
+			printf("Thread error\n");
+		} else {
+			pthread_join(tid[order[i]], NULL);//wait until it completes
+		}
+		
+	}
+	//all threads in sequence ve been called and finished this pt
 	return 0;
 }
 
@@ -232,6 +309,7 @@ int RQ(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 
 int RL(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) {
 	int j;
+	int i;
 	int rel[m];
 	int valid = 1;	
 
@@ -295,13 +373,10 @@ int RL(int avail[m], int max[n][m], int allo[n][m], int need[n][m], char *line) 
 	}
 	//at this point the request is valid, update arrays
 	for (j = 0; j < m; j++){
-
 		allo[process][j] = allo[process][j] - rel[j];
-		//printf("ALLO: %d", );
-		need[process][j] = max[process][j]-allo[process][j];
+		need[process][j] = need[process][j] + rel[j];
 		avail[j] = avail[j] + rel[j];
 	}
-
 
 	return 0;
 }
@@ -326,23 +401,35 @@ int main(int argc, char **argv) {
 	int hold = 0; //this is for 2 digit numbers
 	i = 0;//holds row
 	j = 0;//holds column
-	int max[20][20];
+	int temp[20][20];
 	while ((a = fgetc(maxin)) != EOF){
 		if(isdigit(a)){//add number to hold
-			hold = (int)a - 48 + 10 * hold;		
+			hold = (int)a - 48 + 10 * hold;
+			temp[i][j] = hold;
 		} else if (a == '\n'){//save number and increment i and set j to 0
-			max[i][j] = hold;
+			temp[i][j] = hold;
 			hold = 0;
 			i++;
 			j = 0;
 		} else if (a == ','){//save number and continue
-			max[i][j] = hold;
+			temp[i][j] = hold;
 			hold = 0;
 			j++;
 		}
 	}
+
+
 	n = i + 1;
 	m = j + 1;
+
+	int max[n][m];
+	for (i = 0; i < n; i++) {
+		for (j = 0; j < m; j++) {
+			max[i][j] = temp[i][j];
+		}
+	}
+
+
 	fclose(maxin);
 
 	//FILE INPUT ENDS HERE==============================================
@@ -353,6 +440,8 @@ int main(int argc, char **argv) {
 		printf("Missing command line arguments, exiting with error code -1\n");
 		return -1;
 	}
+
+	pthread_t tid[n];
 
 	//initialize the other 3 main arrays
 
@@ -435,7 +524,7 @@ int main(int argc, char **argv) {
 			printf("\n");
 		} else if (strcmp(line, "Run") == 0) {
 			//run code-----------------------------------------------------------
-			Run(avail, max, allo, need, line);
+			Run(avail, max, allo, need, tid);
 			
 		} else {//one word commands have been checked, now check if command is RL or RQ
 			
