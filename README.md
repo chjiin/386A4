@@ -1,7 +1,37 @@
 # 386A4
 
-You have to maintain the README.md file for the repository to explain the following: 
- 
+## Banker's Algorithm
+Implementation of Banker's Algorithm in C Language.
+
+## Installation
+Can be run using GCC compile commands or through Makefile.
+```
+make
+./Question1 10 5 7 8
+```
+
+## Contributors
+***Anthony Siprak***
+*Backend
+*RQ
+*RL
+*Run
+*Threadrun
+*Main
+*Debug
+
+***Chen Jin***
+*Backend
+*RQ
+*RL
+*Run
+*Threadrun
+*Main
+*Debug
+
+## Features
+
+
 • Project title 
 • Motivation 
 • Installation 
