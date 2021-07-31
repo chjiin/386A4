@@ -48,6 +48,12 @@ make
 ![alt text](https://i.ibb.co/cwPdFNY/p2.png)
 ![alt text](https://i.ibb.co/9Nz7Sh9/p3.png)
 
+## Credits
+Anthony Siprak
+Chen Jin
+
+Wilfrid Laurier University
+Instructor: Dr. Sukhjit Singh Sehra
 ## License
 Licensed under GNU GENERAL PUBLIC LICENSE
 
