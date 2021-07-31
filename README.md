@@ -12,22 +12,37 @@ make
 
 ## Contributors
 ***Anthony Siprak***
-*Backend
-*RQ
-*RL
-*Run
-*Threadrun
-*Main
-*Debug
+
+-Backend
+
+-RQ
+
+-RL
+
+-Run
+
+-Threadrun
+
+-Main
+
+-Debug
+
 
 ***Chen Jin***
-*Backend
-*RQ
-*RL
-*Run
-*Threadrun
-*Main
-*Debug
+
+-Backend
+
+-RQ
+
+-RL
+
+-Run
+
+-Threadrun
+
+-Main
+
+-Debug
 
 ## Features
 
