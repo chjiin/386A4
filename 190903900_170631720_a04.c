@@ -585,7 +585,6 @@ int main(int argc, char **argv) {
 	for(k=0;k<length; k++){
 		printf("%d ", order[k]);
 	}
-
 	
 	//SECOND HALF OF RUN---------------------------------------------
 	i = 0;//holds placement in safe sequence
