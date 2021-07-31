@@ -50,9 +50,11 @@ make
 
 ## Credits
 Anthony Siprak
+
 Chen Jin
 
 Wilfrid Laurier University
+
 Instructor: Dr. Sukhjit Singh Sehra
 ## License
 Licensed under GNU GENERAL PUBLIC LICENSE
