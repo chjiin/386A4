@@ -32,9 +32,11 @@ It is assumed that the user is familiar with Banker's Alogrithm and it's uses.
 ### RQ thread# resource1 resource2 resource3 resource4
   - Requests resources to allocate to given thread number.
 ### RL thread# resource1 resource2 resource3 resource4  
-  - Releases input resources for given thread
+  - Releases input resources for given thread.
 ### Status
-  - Displays status of all arrays customers
+  - Displays status of all arrays customers.
+### Run
+  - Executes all threads and allocates and deallocates resources.
 
 ## Use Examples and Sample Ouput
 
