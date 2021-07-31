@@ -27,6 +27,15 @@ make
 - Main
 - Debug
 
+## Features & User Commands
+It is assumed that the user is familiar with Banker's Alogrithm and it's uses.
+### RQ thread# resource1 resource2 resource3 resource4
+  - Requests resources to allocate to given thread number.
+### RL thread# resource1 resource2 resource3 resource4  
+  - Releases input resources for given thread
+### Status
+  - Displays status of all arrays customers
+
 ## Use Examples and Sample Ouput
 
 ```
