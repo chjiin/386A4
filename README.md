@@ -1,4 +1,4 @@
-# 386A4
+# CP386 Assignment 4
 
 ## Banker's Algorithm
 Implementation of Banker's Algorithm in C Language.
