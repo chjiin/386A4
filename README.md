@@ -4,7 +4,7 @@
 Implementation of Banker's Algorithm in C Language.
 
 ## Installation
-Can be run using GCC compile commands or through Makefile.
+Can be run using GCC compile commands or through the Makefile file provided by Dr. Sukhjit Singh Sehra.
 ```
 make
 ./Question1 10 5 7 8
@@ -37,7 +37,8 @@ It is assumed that the user is familiar with Banker's Alogrithm and it's uses.
   - Displays status of all arrays customers
 ##### Run
   - Executes the threads in a safe sequence and allocates and deallocates resources.
-
+##### Exit
+  - Terminates the program
 ## Use Examples and Sample Ouput
 
 ```
