@@ -47,5 +47,5 @@ make
 ![alt text](https://i.ibb.co/9Nz7Sh9/p3.png)
 
 ## README
-GNU GENERAL PUBLIC LICENSE
+Licensed under GNU GENERAL PUBLIC LICENSE
 
