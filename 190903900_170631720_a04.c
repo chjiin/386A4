@@ -34,7 +34,7 @@ void* Threadrun(int i, int avail[m], int max[n][m], int allo[n][m], int need[n][
 	return NULL;
 }
 
-int Run(int avail[m], int max[n][m], int allo[n][m], int need[n][m], pthread_t tid[n]) {
+int Run(int avail[m], int max[n][m], int allo[n][m], int need[n][m]) {
 	int valid = 1;
 	int i = 0;
 	int j = 0;
@@ -45,6 +45,8 @@ int Run(int avail[m], int max[n][m], int allo[n][m], int need[n][m], pthread_t t
 	int allo2[n][m];
 	int avail2[m];
 	int need2[n][m];
+	pthread_t tid;
+
 
 	//Duplicating Arrays ================================
     for(i = 0;i < n; i++){
@@ -71,6 +73,7 @@ int Run(int avail[m], int max[n][m], int allo[n][m], int need[n][m], pthread_t t
 			}
 		}
 	}
+	
 	i = 0;
 	while(i < n){//we have to run through this loop until no i satisfies condition
 		valid = 1;
@@ -132,12 +135,13 @@ int Run(int avail[m], int max[n][m], int allo[n][m], int need[n][m], pthread_t t
 		printf("\n");
 
 		//run thread function
-		printf("TID: %s", tid[order[i]]);
-		err = pthread_create(&(tid[order[i]]), NULL, Threadrun(order[i], avail, max, allo, need), NULL);
+		//printf("TID: %s", tid[order[i]]);
+		
+		err = pthread_create(&tid, NULL, Threadrun(order[i], avail, max, allo, need), NULL);
 		if (err != 0){
 			printf("Thread error\n");
 		} else {
-			pthread_join(tid[order[i]], NULL);//wait until it completes
+			pthread_join(tid, NULL);//wait until it completes
 		}
 		
 	}
@@ -524,7 +528,7 @@ int main(int argc, char **argv) {
 			printf("\n");
 		} else if (strcmp(line, "Run") == 0) {
 			//run code-----------------------------------------------------------
-			Run(avail, max, allo, need, tid);
+			Run(avail, max, allo, need);
 			
 		} else {//one word commands have been checked, now check if command is RL or RQ
 			
